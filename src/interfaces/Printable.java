@@ -2,6 +2,6 @@ package interfaces;
 
 public interface Printable {
     default void print() {
-        System.out.println(this.toString());
+        System.out.println("print content in console.");
     }
 }
