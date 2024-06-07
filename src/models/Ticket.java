@@ -3,6 +3,7 @@ package models;
 import annotations.NullableWarning;
 import interfaces.Identifiable;
 import interfaces.Printable;
+import sharing.Shareable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -11,16 +12,17 @@ import java.util.Objects;
 public class Ticket implements Identifiable, Printable {
     @NullableWarning
     private String id;
-    private String concertHall;
-    private int eventCode;
+    private final String concertHall;
+    private final int eventCode;
     private long time;
-    private boolean isPromo;
+    private final boolean isPromo;
     private char stadiumSector;
-    private double maxAllowedBackpackWeight;
+    private final double maxAllowedBackpackWeight;
     private final LocalDateTime creationTime;
-    private TicketPrice ticketPrice;
+    private final TicketPrice ticketPrice;
+    private Shareable shareStrategy;
 
-    public Ticket(String id, String concertHall, int eventCode, long time, boolean isPromo, char stadiumSector, double maxAllowedBackpackWeight, TicketPrice ticketPrice) {
+    public Ticket(String id, String concertHall, int eventCode, long time, boolean isPromo, char stadiumSector, double maxAllowedBackpackWeight, TicketPrice ticketPrice, Shareable shareStrategy) {
         this.id = id;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -30,17 +32,15 @@ public class Ticket implements Identifiable, Printable {
         this.maxAllowedBackpackWeight = maxAllowedBackpackWeight;
         this.ticketPrice = ticketPrice;
         this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this.shareStrategy = shareStrategy;
     }
 
     public Ticket(String concertHall, int eventCode, long time) {
-        this.concertHall = concertHall;
-        this.eventCode = eventCode;
-        this.time = time;
-        this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this(null, concertHall, eventCode, time, false, 'A', 0.0, null, null);
     }
 
     public Ticket() {
-        this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this(null, "", 0, 0, false, 'A', 0.0, null, null);
     }
 
     @Override
@@ -59,20 +59,8 @@ public class Ticket implements Identifiable, Printable {
         return concertHall;
     }
 
-    public void setConcertHall(String concertHall) {
-        if (concertHall.length() > 10 || concertHall.isEmpty())
-            throw new IllegalArgumentException("Concert hall name length exceeds 10 characters.");
-        this.concertHall = concertHall;
-    }
-
     public int getEventCode() {
         return eventCode;
-    }
-
-    public void setEventCode(int eventCode) {
-        if (eventCode < 100 || eventCode > 999)
-            throw new IllegalArgumentException("Event code must be a 3-digit number.");
-        this.eventCode = eventCode;
     }
 
     public long getTime() {
@@ -85,10 +73,6 @@ public class Ticket implements Identifiable, Printable {
 
     public boolean isPromo() {
         return isPromo;
-    }
-
-    public void setPromo(boolean promo) {
-        isPromo = promo;
     }
 
     public char getStadiumSector() {
@@ -105,12 +89,6 @@ public class Ticket implements Identifiable, Printable {
         return maxAllowedBackpackWeight;
     }
 
-    public void setMaxAllowedBackpackWeight(double maxAllowedBackpackWeight) {
-        if (maxAllowedBackpackWeight < 0)
-            throw new IllegalArgumentException("Backpack weight cannot be less than 0.");
-        this.maxAllowedBackpackWeight = maxAllowedBackpackWeight;
-    }
-
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
@@ -119,13 +97,22 @@ public class Ticket implements Identifiable, Printable {
         return ticketPrice;
     }
 
-    public void setTicketPrice(TicketPrice ticketPrice) {
-        this.ticketPrice = ticketPrice;
+    public void shared() {
+        if (shareStrategy == null) {
+            System.out.println("No sharing strategy set.");
+            return;
+        }
+        shareStrategy.share();
+    }
+
+    @Override
+    public void print() {
+        Printable.super.print();
     }
 
     @Override
     public String toString() {
-        return "models.Ticket{" +
+        return "Ticket{" +
                 "id='" + id + '\'' +
                 ", concertHall='" + concertHall + '\'' +
                 ", eventCode=" + eventCode +
