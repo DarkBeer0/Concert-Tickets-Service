@@ -1,7 +1,15 @@
+package models;
+
+import annotations.NullableWarning;
+import interfaces.Identifiable;
+import interfaces.Printable;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 
-public class Ticket {
+public class Ticket implements Identifiable, Printable {
+    @NullableWarning
     private String id;
     private String concertHall;
     private int eventCode;
@@ -24,7 +32,6 @@ public class Ticket {
         this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
-
     public Ticket(String concertHall, int eventCode, long time) {
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -36,10 +43,12 @@ public class Ticket {
         this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         if (id.length() > 4)
             throw new IllegalArgumentException("ID length exceeds 4 characters.");
@@ -90,7 +99,6 @@ public class Ticket {
         if (stadiumSector < 'A' || stadiumSector > 'C')
             throw new IllegalArgumentException("Stadium sector must be between 'A' and 'C'.");
         this.stadiumSector = stadiumSector;
-
     }
 
     public double getMaxAllowedBackpackWeight() {
@@ -117,7 +125,7 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "Ticket{" +
+        return "models.Ticket{" +
                 "id='" + id + '\'' +
                 ", concertHall='" + concertHall + '\'' +
                 ", eventCode=" + eventCode +
@@ -128,5 +136,26 @@ public class Ticket {
                 ", creationTime=" + creationTime +
                 ", ticketPrice=" + ticketPrice +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return eventCode == ticket.eventCode &&
+                time == ticket.time &&
+                isPromo == ticket.isPromo &&
+                Double.compare(ticket.maxAllowedBackpackWeight, maxAllowedBackpackWeight) == 0 &&
+                Objects.equals(id, ticket.id) &&
+                Objects.equals(concertHall, ticket.concertHall) &&
+                stadiumSector == ticket.stadiumSector &&
+                Objects.equals(creationTime, ticket.creationTime) &&
+                Objects.equals(ticketPrice, ticket.ticketPrice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, concertHall, eventCode, time, isPromo, stadiumSector, maxAllowedBackpackWeight, creationTime, ticketPrice);
     }
 }

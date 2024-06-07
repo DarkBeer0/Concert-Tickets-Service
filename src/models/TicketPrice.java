@@ -1,3 +1,5 @@
+package models;
+
 public class TicketPrice {
     private int dollars;
     private int cents;
