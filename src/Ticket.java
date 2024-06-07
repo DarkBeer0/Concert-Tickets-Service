@@ -13,17 +13,6 @@ public class Ticket {
     private TicketPrice ticketPrice;
 
     public Ticket(String id, String concertHall, int eventCode, long time, boolean isPromo, char stadiumSector, double maxAllowedBackpackWeight, TicketPrice ticketPrice) {
-        if (id.length() > 4)
-            throw new IllegalArgumentException("ID length exceeds 4 characters.");
-        if (concertHall.length() > 10 || concertHall.isEmpty())
-            throw new IllegalArgumentException("Concert hall name length exceeds 10 characters.");
-        if (eventCode < 100 || eventCode > 999)
-            throw new IllegalArgumentException("Event code must be a 3-digit number.");
-        if (stadiumSector < 'A' || stadiumSector > 'C')
-            throw new IllegalArgumentException("Stadium sector must be between 'A' and 'C'.");
-        if (maxAllowedBackpackWeight < 0)
-            throw new IllegalArgumentException("Backpack weight cannot be less than 0.");
-
         this.id = id;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -37,11 +26,6 @@ public class Ticket {
 
 
     public Ticket(String concertHall, int eventCode, long time) {
-        if (concertHall.length() > 10 || concertHall.isEmpty())
-            throw new IllegalArgumentException("Concert hall name length exceeds 10 characters.");
-        if (eventCode < 100 || eventCode > 999)
-            throw new IllegalArgumentException("Event code must be a 3-digit number.");
-
         this.concertHall = concertHall;
         this.eventCode = eventCode;
         this.time = time;
