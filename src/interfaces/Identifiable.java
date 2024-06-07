@@ -1,6 +1,6 @@
 package interfaces;
 
 public interface Identifiable {
-    String getId();
-    void setId(String id);
+    int getId();
+    void setId(int id);
 }

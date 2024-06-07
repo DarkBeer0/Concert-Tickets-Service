@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
-public class Ticket implements Identifiable, Printable {
+public class Ticket implements Printable {
     @NullableWarning
     private String id;
     private final String concertHall;
@@ -43,18 +43,9 @@ public class Ticket implements Identifiable, Printable {
         this(null, "", 0, 0, false, 'A', 0.0, null, null);
     }
 
-    @Override
     public String getId() {
         return id;
     }
-
-    @Override
-    public void setId(String id) {
-        if (id.length() > 4)
-            throw new IllegalArgumentException("ID length exceeds 4 characters.");
-        this.id = id;
-    }
-
     public String getConcertHall() {
         return concertHall;
     }
