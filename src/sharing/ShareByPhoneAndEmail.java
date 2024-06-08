@@ -1,5 +1,7 @@
 package sharing;
 
+import interfaces.Shareable;
+
 public class ShareByPhoneAndEmail implements Shareable {
     @Override
     public void share() {

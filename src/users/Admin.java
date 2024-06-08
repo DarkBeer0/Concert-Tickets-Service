@@ -1,12 +1,11 @@
 package users;
 
-import interfaces.Identifiable;
+import abstracts.Identifiable;
 import interfaces.Printable;
 import models.Ticket;
 
-public class Admin implements Printable, Identifiable {
+public class Admin extends Identifiable implements Printable {
     private String role;
-    private int id;
     public Admin() {
         this.role = "Admin";
     }
@@ -17,15 +16,5 @@ public class Admin implements Printable, Identifiable {
 
     public void checkTicket(Ticket ticket) {
         System.out.println("Checking ticket: " + ticket);
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 }

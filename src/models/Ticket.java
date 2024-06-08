@@ -1,9 +1,8 @@
 package models;
 
 import annotations.NullableWarning;
-import interfaces.Identifiable;
 import interfaces.Printable;
-import sharing.Shareable;
+import interfaces.Shareable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
