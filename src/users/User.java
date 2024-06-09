@@ -5,7 +5,6 @@ import services.TicketService;
 
 public class User implements Printable {
     private String role;
-    private int id;
     public User() {
         this.role = "User";
     }
