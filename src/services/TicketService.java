@@ -7,7 +7,6 @@ import sharing.ShareByPhone;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TicketService {
     private Map<String, Ticket> tickets;
@@ -26,6 +25,6 @@ public class TicketService {
     public List<Ticket> getTicketsByStadiumSector(char stadiumSector) {
         return tickets.values().stream()
                 .filter(ticket -> ticket.getStadiumSector() == stadiumSector)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
