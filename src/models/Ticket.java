@@ -1,18 +1,27 @@
+package models;
+
+import annotations.NullableWarning;
+import interfaces.Printable;
+import interfaces.Shareable;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 
-public class Ticket {
+public class Ticket implements Printable {
+    @NullableWarning
     private String id;
-    private String concertHall;
-    private int eventCode;
+    private final String concertHall;
+    private final int eventCode;
     private long time;
-    private boolean isPromo;
+    private final boolean isPromo;
     private char stadiumSector;
-    private double maxAllowedBackpackWeight;
+    private final double maxAllowedBackpackWeight;
     private final LocalDateTime creationTime;
-    private TicketPrice ticketPrice;
+    private final TicketPrice ticketPrice;
+    private Shareable shareStrategy;
 
-    public Ticket(String id, String concertHall, int eventCode, long time, boolean isPromo, char stadiumSector, double maxAllowedBackpackWeight, TicketPrice ticketPrice) {
+    public Ticket(String id, String concertHall, int eventCode, long time, boolean isPromo, char stadiumSector, double maxAllowedBackpackWeight, TicketPrice ticketPrice, Shareable shareStrategy) {
         this.id = id;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -22,48 +31,26 @@ public class Ticket {
         this.maxAllowedBackpackWeight = maxAllowedBackpackWeight;
         this.ticketPrice = ticketPrice;
         this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this.shareStrategy = shareStrategy;
     }
 
-
     public Ticket(String concertHall, int eventCode, long time) {
-        this.concertHall = concertHall;
-        this.eventCode = eventCode;
-        this.time = time;
-        this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this(null, concertHall, eventCode, time, false, 'A', 0.0, null, null);
     }
 
     public Ticket() {
-        this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
+        this(null, "", 0, 0, false, 'A', 0.0, null, null);
     }
 
     public String getId() {
         return id;
     }
-
-    public void setId(String id) {
-        if (id.length() > 4)
-            throw new IllegalArgumentException("ID length exceeds 4 characters.");
-        this.id = id;
-    }
-
     public String getConcertHall() {
         return concertHall;
     }
 
-    public void setConcertHall(String concertHall) {
-        if (concertHall.length() > 10 || concertHall.isEmpty())
-            throw new IllegalArgumentException("Concert hall name length exceeds 10 characters.");
-        this.concertHall = concertHall;
-    }
-
     public int getEventCode() {
         return eventCode;
-    }
-
-    public void setEventCode(int eventCode) {
-        if (eventCode < 100 || eventCode > 999)
-            throw new IllegalArgumentException("Event code must be a 3-digit number.");
-        this.eventCode = eventCode;
     }
 
     public long getTime() {
@@ -78,10 +65,6 @@ public class Ticket {
         return isPromo;
     }
 
-    public void setPromo(boolean promo) {
-        isPromo = promo;
-    }
-
     public char getStadiumSector() {
         return stadiumSector;
     }
@@ -90,17 +73,10 @@ public class Ticket {
         if (stadiumSector < 'A' || stadiumSector > 'C')
             throw new IllegalArgumentException("Stadium sector must be between 'A' and 'C'.");
         this.stadiumSector = stadiumSector;
-
     }
 
     public double getMaxAllowedBackpackWeight() {
         return maxAllowedBackpackWeight;
-    }
-
-    public void setMaxAllowedBackpackWeight(double maxAllowedBackpackWeight) {
-        if (maxAllowedBackpackWeight < 0)
-            throw new IllegalArgumentException("Backpack weight cannot be less than 0.");
-        this.maxAllowedBackpackWeight = maxAllowedBackpackWeight;
     }
 
     public LocalDateTime getCreationTime() {
@@ -111,8 +87,17 @@ public class Ticket {
         return ticketPrice;
     }
 
-    public void setTicketPrice(TicketPrice ticketPrice) {
-        this.ticketPrice = ticketPrice;
+    public void shared() {
+        if (shareStrategy == null) {
+            System.out.println("No sharing strategy set.");
+            return;
+        }
+        shareStrategy.share();
+    }
+
+    @Override
+    public void print() {
+        toString();
     }
 
     @Override
@@ -128,5 +113,26 @@ public class Ticket {
                 ", creationTime=" + creationTime +
                 ", ticketPrice=" + ticketPrice +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return eventCode == ticket.eventCode &&
+                time == ticket.time &&
+                isPromo == ticket.isPromo &&
+                Double.compare(ticket.maxAllowedBackpackWeight, maxAllowedBackpackWeight) == 0 &&
+                Objects.equals(id, ticket.id) &&
+                Objects.equals(concertHall, ticket.concertHall) &&
+                stadiumSector == ticket.stadiumSector &&
+                Objects.equals(creationTime, ticket.creationTime) &&
+                Objects.equals(ticketPrice, ticket.ticketPrice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, concertHall, eventCode, time, isPromo, stadiumSector, maxAllowedBackpackWeight, creationTime, ticketPrice);
     }
 }
